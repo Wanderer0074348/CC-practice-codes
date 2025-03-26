@@ -5,14 +5,14 @@
 #include<math.h>
 
 void yyerror(char *s);
-void UpdateSymbol(char *name, int value);
-int getSymbolValue(char *name);
+void UpdateSymbol(char *name, double value);
+double getSymbolValue(char *name);
 int yylex();
-int fact(int x);
+double fact(double x);
 
 typedef struct {
 	char* name;
-	int value;
+	double value;
 } Variable;
 
 Variable SymbolTable[100];
@@ -22,7 +22,7 @@ int SymbolCount = 0;
 
 %union {
 	char* name;
-	int value;
+	double value;
 }
 
 %token <name> IDENTIFIER
@@ -43,7 +43,7 @@ PROGRAM: PROGRAM STATEMENT NL
        |
        ;
 
-STATEMENT: IDENTIFIER EQ EXPRESSION SC {UpdateSymbol($1,$3); free($1);}
+STATEMENT: IDENTIFIER EQ EXPRESSION {UpdateSymbol($1,$3); printf("%s to %f\n",$1,$3); free($1);}
 	 ;
 
 EXPRESSION: EXPRESSION ADD EXPRESSION {$$ = $1+$3;}
@@ -54,11 +54,12 @@ EXPRESSION: EXPRESSION ADD EXPRESSION {$$ = $1+$3;}
 	  | EXPRESSION FAC {$$ = fact($1);}
 	  | LB EXPRESSION RB {$$ = $2;}
 	  | NUMBER
+	  | IDENTIFIER	{ $$ = getSymbolValue($1); free($1);}
 	  ;
 %%
 
-int fact(int x){
-	int ans;
+double fact(double x){
+	double ans = 1.0;
 	for (int i = x; i>1; i--){
 		ans = ans*i;
 	}
@@ -66,7 +67,7 @@ int fact(int x){
 }
 
 
-void UpdateSymbol(char *name, int value){
+void UpdateSymbol(char *name, double value){
 	for (int i=0; i<SymbolCount; i++){
 		if (strcmp(SymbolTable[i].name, name)==0){
 			SymbolTable[i].value = value;
@@ -74,12 +75,12 @@ void UpdateSymbol(char *name, int value){
 		}
 	}
 
-	SymbolTable[SymbolCount].name = name;
+	SymbolTable[SymbolCount].name = strdup(name);
 	SymbolTable[SymbolCount].value = value;
 	SymbolCount++;
 }
 
-int getSymbolValue(char *name){
+double getSymbolValue(char *name){
 	for (int i=0; i<SymbolCount; i++){
 		if (strcmp(SymbolTable[i].name, name)==0){
 			return SymbolTable[i].value;
