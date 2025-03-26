@@ -44,7 +44,8 @@ PROGRAM: PROGRAM STATEMENT NL
        ;
 
 STATEMENT: IDENTIFIER EQ EXPRESSION {UpdateSymbol($1,$3); printf("%s to %f\n",$1,$3); free($1);}
-	 ;
+		| EXPRESSION {printf("%f\n", $1);}
+	   ;
 
 EXPRESSION: EXPRESSION ADD EXPRESSION {$$ = $1+$3;}
 	  | EXPRESSION SUB EXPRESSION {$$ = $1-$3;}
