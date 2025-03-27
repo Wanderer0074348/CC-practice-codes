@@ -12,7 +12,7 @@ int yywrap();
 %%
 
 [a-zA-Z_][a-zA-Z0-9_]*		{ yylval.name = strdup(yytext); return IDENTIFIER; }
-[0-9]+(\.[0-9]+)?    		{ yylval.value = atof(yytext); return NUMBER;}
+([0-9]+)\.?([0-9]*)?		{ yylval.value = atof(yytext); return NUMBER;}
 "+"				{ return ADD;}
 "-"				{ return SUB;}
 "*"				{ return MULT;}
@@ -25,7 +25,7 @@ int yywrap();
 ";"				{ return SC; }
 "\n"				{ return NL; }
 [ \t]+			;
-
+. 				{ printf("Lol"); exit(1); }
 %%
 
 int yywrap(){

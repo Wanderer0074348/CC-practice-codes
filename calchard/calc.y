@@ -9,6 +9,7 @@ void UpdateSymbol(char *name, double value);
 double getSymbolValue(char *name);
 int yylex();
 double fact(double x);
+extern void yyrestart(FILE* input_file);
 
 typedef struct {
 	char* name;
@@ -93,8 +94,11 @@ void yyerror(char *s){
 	printf("%s",s);
 }
 
-int main(){
+int main(int argc, char** argv){
+	FILE* in_stream = fopen(argv[1], "r");
+	yyrestart(in_stream);
 	yyparse();
+	fclose(in_stream);
 	return 0;
 }
 
