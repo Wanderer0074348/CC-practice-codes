@@ -7,7 +7,7 @@
     int yylex();
 
     int temp_var_counter = 0;
-    int pointer_counter = 0;
+//    int pointer_counter = 0;
 %}
 
 %union{
